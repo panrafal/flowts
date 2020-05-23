@@ -8,8 +8,11 @@ export interface Options {
   readonly recast: boolean;
   readonly prettier: boolean;
   readonly allowJs: boolean;
-  readonly include: string;
+  readonly forceJsx: boolean;
+  readonly requireComment: boolean;
+  readonly include: string[];
   readonly exclude: string[];
+  readonly afterRename: string;
   readonly interactiveRename: boolean;
 }
 
@@ -18,6 +21,8 @@ const program = new commander.Command();
 const pkg = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '../package.json'), 'utf8')
 );
+
+const defaultInclude = ['**/*.{js,mjs,jsx,js.flow}'];
 
 program
   .name('flowts')
@@ -31,15 +36,19 @@ program
     'convert all JS files to TypeScript(including without Flow)',
     false
   )
+  .option('--require-comment', 'require Flow comment to convert a file', false)
+  .option('--force-jsx', 'treat all files as JSX', false)
+  .option('--after-rename <shellCommand>', 'run shell after renaming', '')
   .option(
     '--interactive-rename',
     'Wait for interactive confirmation after renaming, before writing converted code (allowing to have separate commit to better preserve file history)',
     false
   )
-  .option(
+  .option<string[]>(
     '-i, --include <includeGlob>',
     'Glob expression of files to include, default: "**/*.{js,mjs,jsx,js.flow}"',
-    '**/*.{js,mjs,jsx,js.flow}'
+    (a, b) => [...(b !== defaultInclude ? b : []), a],
+    defaultInclude
   )
   .option<string[]>(
     '-x, --exclude <excludeGlob>',

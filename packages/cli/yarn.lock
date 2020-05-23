@@ -1177,6 +1177,11 @@
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
 
+"@types/debug@^4.1.5":
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.5.tgz#b14efa8852b7768d898906613c23f688713e02cd"
+  integrity sha512-Q1y515GcOdTHgagaVFhHnIFQ38ygs/kmxdNpvpou+raI9UO3YZcHDngBSYKQklcKlvA7iuQlmIKbzvmxcOE9CQ==
+
 "@types/events@*":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@types/events/-/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
@@ -1270,10 +1275,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@zxbodya/babel-plugin-flow-to-typescript@^0.10.5":
-  version "0.10.5"
-  resolved "https://registry.yarnpkg.com/@zxbodya/babel-plugin-flow-to-typescript/-/babel-plugin-flow-to-typescript-0.10.5.tgz#6cf9d59ea0184fcfd0608e4fc6172cabfa40470a"
-  integrity sha512-4GPpzfntafkNDPZ9eZOSbQzcj4LbY4ADpZsmEh4YHJi2hQRDUnKARH5/UxosLKMbIXJWJma9HCFB8TUwv/ioXg==
+"@zxbodya/babel-plugin-flow-to-typescript@^0.10.7":
+  version "0.10.7"
+  resolved "https://registry.yarnpkg.com/@zxbodya/babel-plugin-flow-to-typescript/-/babel-plugin-flow-to-typescript-0.10.7.tgz#a0b79e1986f94dfbbefd5df6dcf263e03564fa65"
+  integrity sha512-wHaPfmCVkNYhyQpYvem1RKEVCh8Oft4SEBHKJrWXh2ZtwO3ajrEXAg/+vFEC0GW+sG5X8tz4+O3P7oFDGQ4ygA==
   dependencies:
     "@babel/template" "^7.8.3"
     "@babel/traverse" "^7.8.4"
@@ -2122,7 +2127,7 @@ execa@^1.0.0:
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
-execa@^4.0.0:
+execa@^4.0.0, execa@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/execa/-/execa-4.0.1.tgz#988488781f1f0238cd156f7aaede11c3e853b4c1"
   integrity sha512-SCjM/zlBdOK8Q5TIjOn6iEHZaPHFsMoTxXQ2nvUvtPnuohz3H2dIozSg+etNR98dGoYUp2ENSKLL/XaMmbxVgw==

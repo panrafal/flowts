@@ -14,6 +14,10 @@ import removeImportExtensionPlugin from './removeImportExtensionPlugin';
 import { sharedParserPlugins } from './sharedParserPlugins';
 import ora from 'ora';
 import readline from 'readline';
+import execa from 'execa';
+import debug from 'debug';
+
+const log = debug('flowts:convert');
 
 export async function convert(cwd: string, opts: Options) {
   console.log('options:', opts);
@@ -46,17 +50,29 @@ export async function convert(cwd: string, opts: Options) {
       const filepath = path.join(cwd, file);
       const source = fs.readFileSync(filepath, { encoding: 'utf8' });
 
-      const { isJSX, isFlow } = detectOptions(source, file);
+      const { isJSX, isFlow, declaredAsFlow } = detectOptions(source, file);
+
+      if (opts.requireComment && isFlow && !declaredAsFlow) {
+        throw 'File contains flow declaration, but is missing the @flow comment';
+      }
 
       const isConverted = isFlow || !opts.allowJs;
 
       const info: FileInfo = {
         file,
         source,
-        isJSX,
+        isJSX: (opts.forceJsx && isFlow) || isJSX,
         isFlow,
         isConverted,
       };
+
+      log('analysed file', file, {
+        isConverted,
+        isJSX,
+        isFlow,
+        declaredAsFlow,
+      });
+
       filesInfo.set(file, info);
     } catch (e) {
       spinner.fail(file);
@@ -232,6 +248,11 @@ export async function convert(cwd: string, opts: Options) {
       });
     });
   }
+
+  if (opts.afterRename) {
+    await execa(opts.afterRename, [], { shell: true, stdio: 'inherit' });
+  }
+
   spinner.info('writing converted files');
 
   totalStr = `${results.length}`;

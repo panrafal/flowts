@@ -5,6 +5,7 @@ import { sharedParserPlugins } from './sharedParserPlugins';
 export interface SourceOptions {
   isJSX: boolean;
   isFlow: boolean;
+  declaredAsFlow: boolean;
 }
 
 export function detectOptions(source: string, filename: string): SourceOptions {
@@ -19,7 +20,8 @@ export function detectOptions(source: string, filename: string): SourceOptions {
   });
 
   let isJSX = /\.jsx$/i.test(filename);
-  let isFlow = /@flow/.test(source) || /\.js\.flow$/i.test(filename);
+  const declaredAsFlow = /@flow/.test(source) || /\.js\.flow$/i.test(filename);
+  let isFlow = declaredAsFlow;
 
   if (flowAst === null) {
     throw new Error(
@@ -35,5 +37,5 @@ export function detectOptions(source: string, filename: string): SourceOptions {
       isFlow = true;
     },
   });
-  return { isJSX, isFlow };
+  return { isJSX, isFlow, declaredAsFlow };
 }
