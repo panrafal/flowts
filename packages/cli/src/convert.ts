@@ -250,7 +250,11 @@ export async function convert(cwd: string, opts: Options) {
   }
 
   if (opts.afterRename) {
-    await execa(opts.afterRename, [], { shell: true, stdio: 'inherit' });
+    await execa(opts.afterRename, [], {
+      shell: true,
+      stdio: 'inherit',
+      reject: false,
+    });
   }
 
   spinner.info('writing converted files');

@@ -20,7 +20,8 @@ export function detectOptions(source: string, filename: string): SourceOptions {
   });
 
   let isJSX = /\.jsx$/i.test(filename);
-  const declaredAsFlow = /@flow/.test(source) || /\.js\.flow$/i.test(filename);
+  const declaredAsFlow =
+    /^\/[/*] +@flow/m.test(source) || /\.js\.flow$/i.test(filename);
   let isFlow = declaredAsFlow;
 
   if (flowAst === null) {
