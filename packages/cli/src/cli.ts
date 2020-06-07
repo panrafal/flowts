@@ -14,6 +14,7 @@ export interface Options {
   readonly exclude: string[];
   readonly afterRename: string;
   readonly interactiveRename: boolean;
+  readonly validate: boolean;
 }
 
 const program = new commander.Command();
@@ -30,6 +31,7 @@ program
   .description('Flow to TypeScript migration tool')
   .option('-R, --no-recast', 'use babel generator instead of recast', false)
   .option('-P, --no-prettier', 'do not run prettier on converted code', false)
+  .option('--no-validate', 'store files even if code differs', false)
   .usage('[options] ./path/to/project')
   .option(
     '--no-allow-js',

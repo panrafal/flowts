@@ -226,11 +226,13 @@ export async function convert(cwd: string, opts: Options) {
   spinner.info('renaming converted files');
   totalStr = `${results.length}`;
   currentCount = 0;
-  for (const { isTyped, sourceFilePath, targetFilePath } of results) {
+  for (const { isTyped, isValid, sourceFilePath, targetFilePath } of results) {
     const currentStr = `${currentCount}`.padStart(totalStr.length, ' ');
     spinner.start(`[${currentStr}/${totalStr}] ${sourceFilePath}`);
     if (!opts.allowJs || isTyped) {
-      fs.renameSync(sourceFilePath, targetFilePath);
+      if (isValid || !opts.validate) {
+        fs.renameSync(sourceFilePath, targetFilePath);
+      }
     }
     currentCount += 1;
   }
@@ -265,17 +267,13 @@ export async function convert(cwd: string, opts: Options) {
     isTyped,
     sourceFilePath,
     targetFilePath,
-    source,
     result,
     isValid,
   } of results) {
     const currentStr = `${currentCount}`.padStart(totalStr.length, ' ');
     spinner.start(`[${currentStr}/${totalStr}] ${sourceFilePath}`);
-    if (isTyped) {
+    if (isTyped && (isValid || !opts.validate)) {
       fs.writeFileSync(targetFilePath, result);
-      if (!isValid) {
-        fs.writeFileSync(sourceFilePath, source);
-      }
     }
     currentCount += 1;
   }
