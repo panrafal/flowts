@@ -61,7 +61,7 @@ export async function convert(cwd: string, opts: Options) {
       const info: FileInfo = {
         file,
         source,
-        isJSX: (opts.forceJsx && isFlow) || isJSX,
+        isJSX: isJSX || (opts.forceJsx && /\.js\.flow$/i.test(file) === false),
         isFlow,
         isConverted,
       };
