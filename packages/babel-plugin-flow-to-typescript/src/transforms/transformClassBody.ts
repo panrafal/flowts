@@ -6,17 +6,19 @@ export function transformClassBody(path: NodePath<t.ClassBody>) {
   for (const elementPath of path.get('body')) {
     if (elementPath.isClassMethod()) {
       if (elementPath.node.kind === 'constructor') {
+        // @ts-expect-error todo babel-types
         elementPath.get('returnType').remove();
       }
+      // @ts-expect-error todo babel-types
       transformFunctionParams(elementPath.get('params'));
     }
 
     if (elementPath.isClassProperty()) {
-      // @ts-ignore todo: missing proppery in babel
+      // @ts-expect-error todo: missing proppery in babel
       const variance = elementPath.node.variance;
       if (variance) {
         elementPath.node.readonly = variance && variance.kind === 'plus';
-        // @ts-ignore
+        // @ts-expect-error
         elementPath.node.variance = null;
       }
     }

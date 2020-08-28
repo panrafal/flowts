@@ -38,7 +38,8 @@ function getModuleDescr(moduleObj: NodePath<t.ObjectExpression>) {
         'modules can be defined only as properties in "modules" object'
       );
     }
-    const value = prop.get('value');
+    // todo: babel-types
+    const value = prop.get('value') as NodePath;
     const key = prop.get('key') as NodePath;
     const keyName = key.isIdentifier()
       ? key.node.name
@@ -132,13 +133,15 @@ export class Rule {
             'only object expression is supported'
           );
         }
-        const rootProperties = expression.get('properties');
+        // todo: babel-types
+        const rootProperties = expression.get('properties') as NodePath[];
 
         for (const rootProperty of rootProperties) {
           if (rootProperty.isObjectProperty()) {
-            const value = rootProperty.get('value');
-
+            // todo: babel-types
+            const value = rootProperty.get('value') as NodePath;
             const key = rootProperty.get('key') as NodePath;
+
             const keyName = key.isIdentifier()
               ? key.node.name
               : key.isStringLiteral()
@@ -186,7 +189,9 @@ export class Rule {
           'rules can be defined only as methods on globals object'
         );
       }
-      globalRules.set(globalRule.node.key, globalRule);
+      // todo: change this to be string
+      const globalName: any = globalRule.node.key;
+      globalRules.set(globalName, globalRule);
     }
 
     const modulesRules = new Map<
@@ -203,8 +208,10 @@ export class Rule {
           'modules can be defined only as properties in modules object'
         );
       }
-      const moduleName = module.node.key;
-      const moduleObj = module.get('value');
+      // todo: change this to be string
+      const moduleName: any = module.node.key;
+      // todo: babel-types
+      const moduleObj = module.get('value') as NodePath;
       if (!moduleObj.isObjectExpression()) {
         throw moduleObj.buildCodeFrameError(
           'only object expression is supported for module rules'

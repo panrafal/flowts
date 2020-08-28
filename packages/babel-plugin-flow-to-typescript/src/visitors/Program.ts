@@ -21,14 +21,14 @@ export const Program = {
         >).remove();
       }
     }
-    // @ts-ignore recast support
+    // @ts-expect-error recast support
     if (firstNode && firstNode.comments && firstNode.comments.length) {
-      // @ts-ignore recast support
+      // @ts-expect-error recast support
       const commentIndex = firstNode.comments.findIndex(
         (item: any) => item.value.trim() === '@flow'
       );
       if (commentIndex !== -1) {
-        // @ts-ignore recast support
+        // @ts-expect-error recast support
         firstNode.comments.splice(commentIndex, 1);
       }
     }
@@ -37,7 +37,6 @@ export const Program = {
     path.traverse({
       /* istanbul ignore next */
       Flow(path: NodePath<any>) {
-        // @ts-ignore todo: babel incorrectly considers type import to be "Flow" while now it can be also TypeScript
         if (
           path.node.type === 'ImportDeclaration' ||
           path.node.type === 'ExportNamedDeclaration'
@@ -82,10 +81,9 @@ export const Program = {
               }
             }
           } else {
-            // @ts-ignore
+            // @ts-expect-error
             if (helperTypes[name]) {
-              // @ts-ignore
-              usedHelperTypes.add(name);
+              usedHelperTypes.add(name as keyof typeof helperTypes);
             }
           }
         }
@@ -124,13 +122,13 @@ export const Program = {
       return func;
     }
 
-    function visitPossibliyFuncPath(st: NodePath) {
+    function visitPossiblyFuncPath(st: NodePath) {
       const node = st.node;
       if (t.isTSDeclareFunction(node)) {
         if (node.id) {
           const func = getFunc(node.id.name);
 
-          // @ts-ignore todo: traverse types
+          // @ts-expect-error todo: traverse types
           func.decl.push(st);
           return func;
         }
@@ -139,7 +137,7 @@ export const Program = {
         if (node.id) {
           const func = getFunc(node.id.name);
 
-          // @ts-ignore todo: traverse types
+          // @ts-expect-error todo: traverse types
           func.impl.push(st);
           return func;
         }
@@ -148,16 +146,16 @@ export const Program = {
     }
 
     for (const st of body) {
-      visitPossibliyFuncPath(st);
+      visitPossiblyFuncPath(st);
       if (
         (t.isExportDefaultDeclaration(st.node) ||
           t.isExportNamedDeclaration(st.node)) &&
         st.node.declaration
       ) {
-        // @ts-ignore todo: traverse types
-        const maybeFunc = visitPossibliyFuncPath(st.get('declaration'));
+        // @ts-expect-error todo: traverse types
+        const maybeFunc = visitPossiblyFuncPath(st.get('declaration'));
         if (maybeFunc) {
-          // @ts-ignore todo: traverse types
+          // @ts-expect-error todo: traverse types
           maybeFunc.exp.push(st);
         }
       }
@@ -182,25 +180,27 @@ export const Program = {
             exp.replaceWithMultiple([
               exp.node.declaration!,
               t.exportDefaultDeclaration(
-                // @ts-ignore
+                // @ts-expect-error
                 t.identifier(exp.node.declaration.id.name)
               ),
             ]);
           }
           if (t.isExportNamedDeclaration(exp.node)) {
-            const specifier = t.identifier(exp.node.declaration.id.name);
+            const specifier = t.identifier(
+              // todo: might be add more specific type info for `func` to avoid typecast
+              (exp.node.declaration! as
+                | t.FunctionDeclaration
+                | t.TSDeclareFunction).id!.name
+            );
             exp.replaceWithMultiple([
               exp.node.declaration!,
-              t.exportNamedDeclaration(
-                null,
-                // @ts-ignore
-                [t.exportSpecifier(specifier, specifier)]
-              ),
+              t.exportNamedDeclaration(null, [
+                t.exportSpecifier(specifier, specifier),
+              ]),
             ]);
           }
           for (const otherExp of expToRemove) {
-            // @ts-ignore
-            otherExp.replaceWith(otherExp.node.declaration);
+            otherExp.replaceWith(otherExp.node.declaration!);
           }
         }
       }
