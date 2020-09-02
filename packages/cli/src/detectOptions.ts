@@ -31,6 +31,13 @@ export function detectOptions(source: string, filename: string): SourceOptions {
   }
 
   traverse(flowAst, {
+    Program({ node: { body } }) {
+      if (body.length === 0) {
+        // this file is empty!
+        isJSX = false;
+        isFlow = false;
+      }
+    },
     JSX() {
       isJSX = true;
     },
