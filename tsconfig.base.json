@@ -16,7 +16,6 @@
     "isolatedModules": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "strict": true,
-    "noEmitOnError": false,
+    "strict": true
   }
 }
